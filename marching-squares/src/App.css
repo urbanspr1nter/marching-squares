@@ -1,38 +1,54 @@
-.App {
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+
+
+body {
+  font-family: 'Comic Neue', cursive;
+  font-size: 1.2em;
+  background-color: pink;
+}
+
+.container {
+  background-color: white;
+  margin-top: 2em;
+  padding-top: 0;
+  padding-bottom: 2em;
+  border-radius: 0.5em;
+  margin-bottom: 2em;
+}
+
+h1, h2, h3 {
+  font-weight: 400;
+  text-align: center;
+  margin-top: 1em;
+}
+
+h2, h3 {
+  margin-top: 2em;
+}
+
+h1~p.lead, h2~p.lead {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.rule {
+  border-top: 2px solid rgba(0.5, 0.5, 0.5, 0.1);
+  margin-left: 0em;
+  margin-bottom: 1em;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+a {
+  color: hotpink;
+  font-weight: 700;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+a:hover {
+  color: magenta;
+}
+
+.dropdown-toggle {
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.dropdown-toggle:hover {
+  color: white;
 }

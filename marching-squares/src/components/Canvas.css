@@ -1,0 +1,14 @@
+.canvas-container canvas {
+    border: 2px dotted pink;
+}
+
+.canvas-container button {
+    background-color: hotpink;
+    font-weight: bold;
+    border:none;
+}
+
+.canvas-container button:hover {
+    background-color: magenta;
+    font-weight: bold;
+}
