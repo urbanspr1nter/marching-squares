@@ -12,3 +12,7 @@
     background-color: magenta;
     font-weight: bold;
 }
+
+.canvas-container .container .row {
+    margin-bottom: 16px;
+}

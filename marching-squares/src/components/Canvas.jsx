@@ -7,23 +7,13 @@ const Options = {
     Canvas: {
         width: 800,
         height: 800
-    },
-    Grid: {
-        rows: 16,
-        cols: 16
-    },
-    Isovalue: 0.5
+    }
 };
 
-const RESOLUTION = {
-    ColumnGap: Options.Canvas.width / Options.Grid.cols,
-    RowGap: Options.Canvas.height / Options.Grid.rows
-};
-
-function getSampleDimensions() {
+function getResolution(cols, rows) {
     return {
-        totalCol: Options.Grid.cols + 1,
-        totalRow: Options.Grid.rows + 1
+        ColumnGap: Options.Canvas.width / cols,
+        RowGap: Options.Canvas.height / rows
     };
 }
 
@@ -39,6 +29,7 @@ export function Canvas(props) {
     const valuesSet = React.useRef(new Set());
     const [isInterpolation, setIsInterpolation] = React.useState(true);
     const [isovalue, setIsovalue] = React.useState(0.4);
+    const [gridSize, setGridSize] = React.useState(16);
 
 
     const prepareCanvas = React.useCallback(() => {
@@ -72,6 +63,8 @@ export function Canvas(props) {
             context.current.lineTo(Options.Canvas.width, ORIGIN.y);
             context.current.stroke();
 
+            const RESOLUTION = getResolution(gridSize, gridSize)
+
             // Draw Grid
             context.current.strokeStyle = '#bababa';
             for(let i = RESOLUTION.ColumnGap; i < Options.Canvas.width; i += RESOLUTION.ColumnGap) {
@@ -90,13 +83,13 @@ export function Canvas(props) {
         
         context.current.fillStyle = '#000000';
         context.current.strokeStyle = '#000000';        
-    }, [showGridOverlay]);
+    }, [showGridOverlay, gridSize]);
 
     const drawValue = React.useCallback((c, currColIndex) => {
         context.current.fillStyle = '#000000';
         context.current.strokeStyle = '#000000';       
 
-        if (currColIndex === Options.Grid.cols - 1) {
+        if (currColIndex === gridSize - 1) {
             const k1 = getSetKey(c.topRight.x, c.topRight.y);
             if(!valuesSet.current.has(k1)) {
                 context.current.fillText(`${c.topRight.v.toPrecision(2)}`, c.topRight.x - 12, c.topRight.y+10);
@@ -131,18 +124,19 @@ export function Canvas(props) {
             context.current.fillText(`${c.bottomLeft.v.toPrecision(2)}`, c.bottomLeft.x, c.bottomLeft.y);
             valuesSet.current.add(k3);
         }   
-    }, [valuesSet]);
+    }, [gridSize, valuesSet]);
 
     const renderValues = React.useCallback((samples) => {       
-        if (!samples)
+        if (!samples || samples.length !== (gridSize + 1))
             return;
 
         const cells = [];
+        const resolution = getResolution(gridSize, gridSize);
 
-        for(let i = 0; i < Options.Grid.rows; i++) {
+        for(let i = 0; i < gridSize; i++) {
             cells[i] = [];
-            for(let j = 0; j < Options.Grid.cols; j++) {
-                const c = getCoordsForCellAt(i, j, RESOLUTION, samples);
+            for(let j = 0; j < gridSize; j++) {
+                const c = getCoordsForCellAt(i, j, resolution, samples);
 
                 if (showGridOverlay) {
                     drawValue(c, j);
@@ -181,7 +175,12 @@ export function Canvas(props) {
             }
             context.current.stroke();
         }
-    }, [drawValue, showGridOverlay, isInterpolation, isovalue]);
+    }, [drawValue, showGridOverlay, isInterpolation, isovalue, gridSize]);
+
+
+    React.useEffect(() => {
+        setSamples(generateSamples(gridSize, gridSize));
+    }, [gridSize]);
 
     React.useEffect(() => {
         valuesSet.current = new Set();
@@ -189,14 +188,10 @@ export function Canvas(props) {
         renderValues(samples);
     }, [samples, renderValues, prepareCanvas, showGridOverlay]);
 
-    // Initial Load
-    React.useEffect(() => {
-        setSamples(generateSamples(getSampleDimensions()));
-    }, []);
-
+    // Event Handlers
     const onRandomizeClick = React.useCallback(() => {
-        setSamples(generateSamples(getSampleDimensions()));
-    }, []);
+        setSamples(generateSamples(gridSize, gridSize));
+    }, [gridSize]);
 
     const onToggleGridOverlayClick = React.useCallback(() => {
         setShowGridOverlay(!showGridOverlay);
@@ -208,6 +203,14 @@ export function Canvas(props) {
 
     const onInterpolationMethodClick = React.useCallback(() => {
         setIsInterpolation(true);
+    }, []);
+
+    const onIsovalueChange = React.useCallback((e) => {
+        setIsovalue(e.target.value);
+    }, []);
+
+    const onGridSizeChange = React.useCallback((e) => {
+        setGridSize(parseInt(e.target.value));
     }, []);
 
     return (
@@ -234,6 +237,44 @@ export function Canvas(props) {
                                 <Dropdown.Item href="#" onClick={onMidpointMethodClick}>Midpoint</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md">
+                        <div className="form-group">
+                            <label htmlFor="isovalue">
+                                Isovalue <strong>{isovalue}</strong>
+                            </label>
+                            <input 
+                                type="range" 
+                                className="form-control-range" 
+                                id="isovalue" 
+                                min="0" 
+                                max="1" 
+                                step="0.01" 
+                                onChange={onIsovalueChange}
+                                defaultValue="0.4"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md">
+                        <div className="form-group">
+                            <label htmlFor="gridSize">
+                                Grid Size <strong>{gridSize}</strong>
+                            </label>
+                            <input 
+                                type="range" 
+                                className="form-control-range" 
+                                id="gridSize" 
+                                min="2" 
+                                max="128" 
+                                step="2" 
+                                onChange={onGridSizeChange}
+                                defaultValue="16"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

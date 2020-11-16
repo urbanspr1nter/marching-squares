@@ -234,7 +234,7 @@ function Algorithm() {
           by iterating clockwise from the top-left corner to the bottom-left corner. As we iterate, we perform a bitwise left-shift to make room for the next bit.
         </li>
         <li>
-          Once the binary code has been determined, we have our case. Then we find the midpoint between two bipolar vertices and construct the edge based o the case found 
+          Once the binary code has been determined, we have our case. Then we find the midpoint between two bipolar vertices and construct the edge based on the case found 
           using the 4-bit code.
         </li>
       </ul>

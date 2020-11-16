@@ -5,11 +5,11 @@
  * November, 2020
  */
 
-export function generateSamples(dimensions) {
+export function generateSamples(rows, cols) {
     const samples = [];
-    for(let i = 0; i < dimensions.totalRow; i++) {
+    for(let i = 0; i < rows + 1; i++) {
         samples[i] = [];
-        for(let j = 0; j < dimensions.totalCol; j++) {
+        for(let j = 0; j < cols + 1; j++) {
             samples[i].push(Math.random());
         }
     }
